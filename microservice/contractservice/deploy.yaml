@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contractservice
+  namespace: contractservice
+  labels:
+    app: contractservice
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: contractservice
+  template:
+    metadata:
+      labels:
+        app: contractservice
+    spec:
+      initContainers:
+        - name: check-db-ready
+          image: postgres:13
+          command: ['sh', '-c', 
+            'until pg_isready -h contractservice-postgresql.contractservice.svc.cluster.local -p 5432; 
+            do echo waiting for database; sleep 2; done;']
+      containers:
+        - name: contractservice
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: contractservice-db-credentials
+                  key: POSTGRES_HOST
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: contractservice-db-credentials
+                  key: POSTGRES_DB
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: contractservice-db-credentials
+                  key: POSTGRES_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: contractservice-db-credentials
+                  key: POSTGRES_PASSWORD
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10

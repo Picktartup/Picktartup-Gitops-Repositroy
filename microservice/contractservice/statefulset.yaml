@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: contractservice-postgresql
+  namespace: contractservice
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  serviceName: contractservice-postgresql
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contractservice-postgresql
+  template:
+    metadata:
+      labels:
+        app: contractservice-postgresql
+    spec:
+      containers:
+        - name: postgresql
+          image: postgres:13
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: POSTGRES_PASSWORD
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: postgresql-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgresql-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: contractservice-postgresql
+  namespace: contractservice
+  labels:
+    app: contractservice-postgresql
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    app: contractservice-postgresql
