@@ -1,0 +1,25 @@
+# config/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: coinservice
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: contractservice
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: startupservice
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: userservice
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: walletservice

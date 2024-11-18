@@ -1,20 +1,20 @@
+# cd/argocd-applications.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: app-of-apps
+  name: contractservice
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
-    path: apps
-    targetRevision: main
-    directory:
-      recurse: true
+    path: microservice/contractservice
+    targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: contractservice
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+---
