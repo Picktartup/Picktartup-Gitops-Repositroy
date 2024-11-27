@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+  namespace: elk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+      - name: logstash
+        image: docker.elastic.co/logstash/logstash:8.11.3
+        ports:
+        - containerPort: 5044
+          name: lumberjack
+        - containerPort: 9600
+          name: monitoring
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: LS_JAVA_OPTS
+          value: "-Xms256m -Xmx512m"
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: startup-db-credentials
+              key: POSTGRES_USER
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: startup-db-credentials
+              key: POSTGRES_PASSWORD
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: startup-db-credentials
+              key: POSTGRES_DB
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/share/logstash/config/logstash.yml
+          subPath: logstash.yml
+        - name: config-volume
+          mountPath: /usr/share/logstash/config/pipelines.yml
+          subPath: pipelines.yml
+        - name: config-volume
+          mountPath: /usr/share/logstash/pipeline/logstash.conf
+          subPath: logstash.conf
+        - name: postgresql-driver
+          mountPath: /usr/share/logstash/logstash-core/lib/jars/postgresql-42.7.4.jar
+          subPath: postgresql-42.7.4.jar
+      volumes:
+      - name: config-volume
+        configMap:
+          name: logstash-config
+      - name: postgresql-driver
+        emptyDir: {}
+      initContainers:
+      - name: download-jdbc-driver
+        image: curlimages/curl
+        command:
+        - sh
+        - -c
+        - |
+          curl -L -o /drivers/postgresql-42.7.4.jar https://jdbc.postgresql.org/download/postgresql-42.7.4.jar
+        volumeMounts:
+        - name: postgresql-driver
+          mountPath: /drivers

@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: elk
+data:
+  logstash.yml: |
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline
+    monitoring.enabled: false
+    
+  pipelines.yml: |
+    - pipeline.id: main
+      path.config: "/usr/share/logstash/pipeline/logstash.conf"
+      
+  logstash.conf: |
+    input {
+      jdbc {
+        jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-42.7.4.jar"
+        jdbc_driver_class => "org.postgresql.Driver"
+        jdbc_connection_string => "jdbc:postgresql://startupservice-postgresql.startupservice.svc.cluster.local:5432/${DB_NAME}"
+        jdbc_user => "${DB_USER}"
+        jdbc_password => "${DB_PASSWORD}"
+        schedule => "*/5 * * * *"  # 5분마다 실행
+        statement => "SELECT *, 'startup' AS table_name FROM startup"
+        jdbc_default_timezone => "Asia/Seoul"
+      }
+      jdbc {
+        jdbc_driver_library => "/usr/share/logstash/logstash-core/lib/jars/postgresql-42.7.4.jar"
+        jdbc_driver_class => "org.postgresql.Driver"
+        jdbc_connection_string => "jdbc:postgresql://startupservice-postgresql.startupservice.svc.cluster.local:5432/${DB_NAME}"
+        jdbc_user => "${DB_USER}"
+        jdbc_password => "${DB_PASSWORD}"
+        schedule => "*/5 * * * *"  # 5분마다 실행
+        statement => "SELECT *, 'ssi' AS table_name FROM ssi"
+        jdbc_default_timezone => "Asia/Seoul"
+      }
+    }
+    filter {
+      if [table_name] == "startup" {
+        date {
+          match => ["investment_start_date", "yyyy-MM-dd HH:mm:ss"]
+          target => "investment_start_date"
+          timezone => "Asia/Seoul"
+        }
+        date {
+          match => ["investment_target_deadline", "yyyy-MM-dd HH:mm:ss"]
+          target => "investment_target_deadline"
+          timezone => "Asia/Seoul"
+        }
+        mutate {
+          convert => { "startup_id" => "integer" }
+        }
+      }
+      if [table_name] == "ssi" {
+        date {
+          match => ["eval_date", "yyyy-MM-dd HH:mm:ss"]
+          target => "eval_date"
+          timezone => "Asia/Seoul"
+        }
+        mutate {
+          convert => { "ssi_id" => "integer" }
+        }
+      }
+    }
+    output {
+      if [table_name] == "startup" {
+        elasticsearch {
+          hosts => ["http://elasticsearch.elk.svc.cluster.local:9200"]
+          index => "startups"
+          document_id => "%{startup_id}"
+        }
+      }
+      if [table_name] == "ssi" {
+        elasticsearch {
+          hosts => ["http://elasticsearch.elk.svc.cluster.local:9200"]
+          index => "ssi"
+          document_id => "%{ssi_id}"
+        }
+      }
+      stdout { codec => json_lines }
+    }

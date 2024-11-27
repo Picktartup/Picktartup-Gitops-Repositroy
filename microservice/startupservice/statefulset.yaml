@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: contractservice-postgresql
-  namespace: contractservice
+  name: startupservice-postgresql
+  namespace: startupservice
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
-  serviceName: contractservice-postgresql
+  serviceName: startupservice-postgresql
   replicas: 1
   selector:
     matchLabels:
-      app: contractservice-postgresql
+      app: startupservice-postgresql
   template:
     metadata:
       labels:
-        app: contractservice-postgresql
+        app: startupservice-postgresql
     spec:
       containers:
         - name: postgresql
@@ -25,17 +25,17 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: contract-db-credentials
+                  name: startup-db-credentials
                   key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: contract-db-credentials
+                  name: startup-db-credentials
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: contract-db-credentials
+                  name: startup-db-credentials
                   key: POSTGRES_PASSWORD
           resources:
             limits:
@@ -60,14 +60,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: contractservice-postgresql
-  namespace: contractservice
+  name: startupservice-postgresql
+  namespace: startupservice
   labels:
-    app: contractservice-postgresql
+    app: startupservice-postgresql
 spec:
   ports:
     - port: 5432
       targetPort: 5432
       protocol: TCP
   selector:
-    app: contractservice-postgresql
+    app: startupservice-postgresql

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: contractservice
-  namespace: contractservice
+  name: walletservice
+  namespace: walletservice
   labels:
-    app: contractservice
+    app: walletservice
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: contractservice
+      app: walletservice
   template:
     metadata:
       labels:
-        app: contractservice
+        app: walletservice
     spec:
       imagePullSecrets:
         - name: ecr-secret
@@ -23,43 +23,65 @@ spec:
         - name: check-db-ready
           image: postgres:13
           command: ['sh', '-c', 
-            'until pg_isready -h contractservice-postgresql.contractservice.svc.cluster.local -p 5432;
+            'until pg_isready -h walletservice-postgresql.walletservice.svc.cluster.local -p 5432;
             do echo waiting for database; sleep 2; done;']
       containers:
-        - name: contractservice
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:latest
+        - name: walletservice
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:latest
           ports:
             - containerPort: 8080
           resources:
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "2048Mi"
+              cpu: "1000m"
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: "1024Mi"
+              cpu: "500m"
           env:
+            - name: JAVA_OPTS
+              value: "-Xms832m -Xmx1638m"
             - name: SPRING_PROFILES_ACTIVE
               value: "prod"
             - name: DB_HOST
               valueFrom:
                 secretKeyRef:
-                  name: contract-db-credentials
+                  name: wallet-db-credentials
                   key: POSTGRES_HOST
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: contract-db-credentials
+                  name: wallet-db-credentials
                   key: POSTGRES_DB
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: contract-db-credentials
+                  name: wallet-db-credentials
                   key: POSTGRES_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: contract-db-credentials
+                  name: wallet-db-credentials
                   key: POSTGRES_PASSWORD
+            - name: CONTRACT_ADMIN_PRIVATEKEY
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: CONTRACT_ADMIN_PRIVATEKEY
+            - name: CONTRACT_FUNDING_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: CONTRACT_FUNDING_ADDRESS
+            - name: CONTRACT_RELAY_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: CONTRACT_RELAY_ADDRESS
+            - name: CONTRACT_TOKEN_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: CONTRACT_TOKEN_ADDRESS
           readinessProbe:
             httpGet:
               path: /actuator/health

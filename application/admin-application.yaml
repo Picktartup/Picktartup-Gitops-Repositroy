@@ -1,20 +1,25 @@
-# cd/argocd-applications.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: contractservice
+  name: adminservice
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
-    path: microservice/contractservice
     targetRevision: HEAD
+    path: microservice/adminservice
   destination:
     server: https://kubernetes.default.svc
-    namespace: contractservice
+    namespace: adminservice
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
----
+    syncOptions:
+      - CreateNamespace=true
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas

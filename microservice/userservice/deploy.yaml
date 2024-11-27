@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: userservice
+ namespace: userservice
+ labels:
+   app: userservice
+ annotations:
+   argocd.argoproj.io/sync-wave: "1"
+spec:
+ replicas: 2
+ selector:
+   matchLabels:
+     app: userservice
+ template:
+   metadata:
+     labels:
+       app: userservice
+   spec:
+     restartPolicy: Always
+     imagePullSecrets:
+       - name: ecr-secret
+     initContainers:
+       - name: check-db-ready
+         image: postgres:13
+         command: ['sh', '-c', 
+           'until pg_isready -h userservice-postgresql.userservice.svc.cluster.local -p 5432;
+           do echo waiting for database; sleep 2; done;']
+     containers:
+       - name: userservice
+         image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/userservice:latest
+         ports:
+           - containerPort: 8080
+         resources:
+           limits:
+             memory: "1024Mi"
+             cpu: "1000m"
+           requests:
+             memory: "512Mi"
+             cpu: "500m"
+         env:
+           - name: SPRING_PROFILES_ACTIVE
+             value: "prod"
+           - name: JAVA_OPTS
+             value: "-Xms256m -Xmx512m -XX:+UseG1GC"
+           - name: DB_HOST
+             valueFrom:
+               secretKeyRef:
+                 name: user-db-credentials
+                 key: POSTGRES_HOST
+           - name: JWT_SECRET
+             valueFrom:
+               secretKeyRef:
+                 name: user-db-credentials
+                 key: JWT_SECRET
+           - name: DB_NAME
+             valueFrom:
+               secretKeyRef:
+                 name: user-db-credentials
+                 key: POSTGRES_DB
+           - name: DB_USER
+             valueFrom:
+               secretKeyRef:
+                 name: user-db-credentials
+                 key: POSTGRES_USER
+           - name: DB_PASSWORD
+             valueFrom:
+               secretKeyRef:
+                 name: user-db-credentials
+                 key: POSTGRES_PASSWORD
+           - name: REDIS_HOST
+             valueFrom:
+               secretKeyRef:
+                 name: redis-secret
+                 key: REDIS_HOST
+           - name: REDIS_PORT
+             valueFrom:
+               secretKeyRef:
+                 name: redis-secret
+                 key: REDIS_PORT
+         readinessProbe:
+           httpGet:
+             path: /actuator/health
+             port: 8080
+           initialDelaySeconds: 180
+           periodSeconds: 10
+           timeoutSeconds: 5
+           failureThreshold: 3
+         livenessProbe:
+           httpGet:
+             path: /actuator/health
+             port: 8080
+           initialDelaySeconds: 180
+           periodSeconds: 10
+           timeoutSeconds: 5
+           failureThreshold: 3
+         startupProbe:
+           httpGet:
+             path: /actuator/health
+             port: 8080
+           initialDelaySeconds: 180
+           failureThreshold: 60
+           periodSeconds: 10
+           timeoutSeconds: 5
