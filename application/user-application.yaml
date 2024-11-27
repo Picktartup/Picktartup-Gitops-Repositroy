@@ -1,18 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: picktartup-root-application
+  name: user-application
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
     targetRevision: HEAD
-    path: application
+    path: microservice/userservice
   destination:
     server: https://kubernetes.default.svc
-    namespace: default
+    namespace: userservice
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
