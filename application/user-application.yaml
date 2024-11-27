@@ -18,8 +18,8 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-  ignoreDifferences:
-  - group: bitnami.com
-    kind: SealedSecret
-    jsonPointers:
-    - /spec/encryptedData
+  ignoreDifferences:                  # spec 레벨에 맞춰 들여쓰기
+    - group: bitnami.com             # 2칸 들여쓰기
+      kind: SealedSecret            # 6칸 들여쓰기
+      jsonPointers:                 # 6칸 들여쓰기
+        - /spec/encryptedData       # 8칸 들여쓰기
