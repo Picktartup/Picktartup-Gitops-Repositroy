@@ -85,6 +85,16 @@ spec:
                 secretKeyRef:
                   name: startup-db-credentials
                   key: AWS_S3_BUCKET
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_USER
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-secret
+                  key: MONGO_PASSWORD
           readinessProbe:
             httpGet:
               path: /actuator/health
