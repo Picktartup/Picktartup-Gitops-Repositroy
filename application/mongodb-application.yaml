@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mongodb-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
+    targetRevision: main
+    path: microservice/startupservice/mongodb
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: startupservice
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Timeout=300s
+  ignoreDifferences:                  
+    - group: bitnami.com
+      kind: SealedSecret
+      jsonPointers:
+        - /status
