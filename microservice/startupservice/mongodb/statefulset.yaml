@@ -24,12 +24,12 @@ spec:
         - name: mongodb-data
           mountPath: /data/db
         env:
-        - name: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_USER
           valueFrom:
             secretKeyRef:
               name: mongodb-secret
               key: MONGO_USER
-        - name: MONGO_INITDB_ROOT_PASSWORD
+        - name: MONGO_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mongodb-secret
