@@ -85,12 +85,12 @@ spec:
                 secretKeyRef:
                   name: startup-db-credentials
                   key: AWS_S3_BUCKET
-            - name: MONGODB_USER
+            - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
                   key: MONGO_USER
-            - name: MONGODB_PASSWORD
+            - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mongodb-secret
