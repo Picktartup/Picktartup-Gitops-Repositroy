@@ -60,6 +60,16 @@ spec:
                 secretKeyRef:
                   name: contract-db-credentials
                   key: POSTGRES_PASSWORD
+            - name: ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: ACCESS_KEY
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: SECRET_KEY
           readinessProbe:
             httpGet:
               path: /actuator/health
