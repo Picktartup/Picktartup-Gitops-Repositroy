@@ -70,6 +70,27 @@ spec:
                 secretKeyRef:
                   name: contract-db-credentials
                   key: SECRET_KEY
+            # Added new environment variables from sealed secret
+            - name: BSC_NETWORK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: BSC_NETWORK_URL
+            - name: CONTRACT_ADMIN_PRIVATEKEY
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: CONTRACT_ADMIN_PRIVATEKEY
+            - name: CONTRACT_FUNDING_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: CONTRACT_FUNDING_ADDRESS
+            - name: CONTRACT_TOKEN_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: CONTRACT_TOKEN_ADDRESS
           readinessProbe:
             httpGet:
               path: /actuator/health
