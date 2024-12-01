@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
     targetRevision: main
-    path: microservice/elkservice/elasticsearch
+    path: microservice/elkservice/elasticseach
   destination:
     server: https://kubernetes.default.svc
     namespace: elk
