@@ -73,7 +73,7 @@ spec:
             port:
               number: 80
       - path: /kibana/(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: kibana-external
@@ -132,7 +132,7 @@ spec:
             port:
               number: 80
       - path: /kibana/(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: kibana-external
