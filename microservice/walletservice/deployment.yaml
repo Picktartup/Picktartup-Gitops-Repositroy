@@ -82,6 +82,11 @@ spec:
                 secretKeyRef:
                   name: wallet-db-credentials
                   key: CONTRACT_TOKEN_ADDRESS
+            - name: WALLET_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: WALLET_ADMIN
           readinessProbe:
             httpGet:
               path: /actuator/health
