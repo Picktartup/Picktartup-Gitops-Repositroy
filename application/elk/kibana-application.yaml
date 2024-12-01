@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kibana-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
+    targetRevision: main
+    path: microservice/elkservice/kibana
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: elk
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Timeout=300s
+  ignoreDifferences:                  
+    - group: bitnami.com
+      kind: SealedSecret
+      jsonPointers:
+        - /status
