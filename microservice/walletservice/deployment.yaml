@@ -27,7 +27,14 @@ spec:
             do echo waiting for database; sleep 2; done;']
       containers:
         - name: walletservice
+<<<<<<< Updated upstream
           image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:ef21552
+=======
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:c7806d2
+          volumeMounts:
+            - name: keystore-volume
+              mountPath: /app/keystore
+>>>>>>> Stashed changes
           ports:
             - containerPort: 8080
           resources:
@@ -105,3 +112,7 @@ spec:
               port: 8080
             failureThreshold: 40
             periodSeconds: 10
+      volumes:
+        - name: keystore-volume
+          persistentVolumeClaim:
+            claimName: keystore-pvc

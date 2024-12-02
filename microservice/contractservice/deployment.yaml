@@ -28,6 +28,9 @@ spec:
       containers:
         - name: contractservice
           image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:latest
+          volumeMounts:
+            - name: keystore-volume
+              mountPath: /app/keystore
           ports:
             - containerPort: 8080
           resources:
@@ -109,3 +112,7 @@ spec:
               port: 8080
             failureThreshold: 40
             periodSeconds: 10
+      volumes:
+        - name: keystore-volume
+          persistentVolumeClaim:
+            claimName: keystore-pvc
