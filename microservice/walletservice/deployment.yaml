@@ -28,9 +28,9 @@ spec:
       containers:
         - name: walletservice
 <<<<<<< Updated upstream
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:ef21552
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:5be101d
 =======
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:c7806d2
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:5be101d
           volumeMounts:
             - name: keystore-volume
               mountPath: /app/keystore
