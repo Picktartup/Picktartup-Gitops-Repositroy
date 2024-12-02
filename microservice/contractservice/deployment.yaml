@@ -27,7 +27,7 @@ spec:
             do echo waiting for database; sleep 2; done;']
       containers:
         - name: contractservice
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:2ac0aae
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:162130d
           volumeMounts:
             - name: keystore-volume
               mountPath: /app/keystore
