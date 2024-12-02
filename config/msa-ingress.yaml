@@ -16,6 +16,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-busy-buffers-size: "512k"
     nginx.ingress.kubernetes.io/proxy-buffer-size: "256k"
     nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+    
 spec:
   ingressClassName: nginx
   rules:
@@ -72,13 +73,6 @@ spec:
             name: admin-external
             port:
               number: 80
-      - path: /kibana/(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: kibana-external
-            port:
-              number: 5601
   # IP 기반 규칙 (host 필드 없음)
   - http:
       paths:
@@ -131,10 +125,3 @@ spec:
             name: admin-external
             port:
               number: 80
-      - path: /kibana/(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: kibana-external
-            port:
-              number: 5601
