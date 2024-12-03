@@ -1,11 +1,8 @@
-# walletservice namespace
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: keystore-pvc
   namespace: walletservice
-  annotations:
-    nfs.io/storage-path: "/shared-keystore"  # 공통 경로 지정
 spec:
   accessModes:
     - ReadWriteMany

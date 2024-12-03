@@ -1,11 +1,8 @@
-# contractservice namespace
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: keystore-pvc
   namespace: contractservice
-  annotations:
-    nfs.io/storage-path: "/shared-keystore"
 spec:
   accessModes:
     - ReadWriteMany
