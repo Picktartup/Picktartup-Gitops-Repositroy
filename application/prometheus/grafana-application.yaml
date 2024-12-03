@@ -5,8 +5,6 @@ metadata:
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/refresh: "300"
 spec:
   project: default
   source:
@@ -15,76 +13,27 @@ spec:
     targetRevision: 6.7.4
     helm:
       values: |
-        adminUser: admin
-        adminPassword: prom-operator
-        
         persistence:
-          type: pvc
-          enabled: true
-          size: 10Gi
-        
+          enabled: false
+        service:
+          type: ClusterIP
         resources:
           limits:
-            cpu: 500m
-            memory: 512Mi
-          requests:
-            cpu: 250m
+            cpu: 200m
             memory: 256Mi
-            
-        service:
-          type: NodePort
-          nodePort: 30091
-        
-        datasources:
-          datasources.yaml:
-            apiVersion: 1
-            datasources:
-            - name: Prometheus
-              type: prometheus
-              url: http://prometheus-server.monitoring.svc.cluster.local
-              access: proxy
-              isDefault: true
-        
-        dashboardProviders:
-          dashboardproviders.yaml:
-            apiVersion: 1
-            providers:
-            - name: 'default'
-              orgId: 1
-              folder: ''
-              type: file
-              disableDeletion: false
-              editable: true
-              options:
-                path: /var/lib/grafana/dashboards/default
-        
-        dashboards:
-          default:
-            node-exporter:
-              gnetId: 1860
-              revision: 31
-              datasource: Prometheus
-            kubernetes-cluster:
-              gnetId: 315
-              revision: 3
-              datasource: Prometheus
-              
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        adminUser: admin
+        adminPassword: admin
+
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
-  
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - PrunePropagationPolicy=foreground
-      - PruneLast=true
-      - ApplyOutOfSyncOnly=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
