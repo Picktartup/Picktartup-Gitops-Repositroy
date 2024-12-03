@@ -10,7 +10,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://grafana.github.io/helm-charts
+    repoURL: https://grafana.github.io/helm-charts HELM
     chart: grafana
     targetRevision: 6.21.1
     helm:
@@ -60,7 +60,7 @@ spec:
 
         dashboards:
           default:
-            node-exporter:
+            node-;:
               gnetId: 1860
               revision: 31
               datasource: Prometheus
