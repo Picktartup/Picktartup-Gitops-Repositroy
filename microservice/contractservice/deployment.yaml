@@ -27,7 +27,7 @@ spec:
             do echo waiting for database; sleep 2; done;']
       containers:
         - name: contractservice
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:7cac228
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:3f5d5e2
           volumeMounts:
             - name: keystore-volume
               mountPath: /app/keystore
@@ -73,7 +73,6 @@ spec:
                 secretKeyRef:
                   name: contract-db-credentials
                   key: SECRET_KEY
-            # Added new environment variables from sealed secret
             - name: BSC_NETWORK_URL
               valueFrom:
                 secretKeyRef:
@@ -94,6 +93,21 @@ spec:
                 secretKeyRef:
                   name: contract-db-credentials
                   key: CONTRACT_TOKEN_ADDRESS
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: MAIL_PASSWORD
+            - name: AUTH_CODE_EXPIRATION_MILLIS
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: AUTH_CODE_EXPIRATION_MILLIS
           readinessProbe:
             httpGet:
               path: /actuator/health
