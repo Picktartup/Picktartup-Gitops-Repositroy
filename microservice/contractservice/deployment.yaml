@@ -130,7 +130,7 @@ spec:
               port: 8080
             failureThreshold: 30
             periodSeconds: 10
-            timeoutSeconds: 5
+            timeoutSeconds: 120
       volumes:
         - name: keystore-volume
           persistentVolumeClaim:
