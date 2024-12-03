@@ -27,7 +27,7 @@ spec:
             do echo waiting for database; sleep 2; done;']
       containers:
         - name: contractservice
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:e93f525
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/contractservice:7cac228
           volumeMounts:
             - name: keystore-volume
               mountPath: /app/keystore
@@ -112,19 +112,19 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 40
+            initialDelaySeconds: 120
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /actuator/health
               port: 8080
-            initialDelaySeconds: 40
+            initialDelaySeconds: 120
             periodSeconds: 10
           startupProbe:
             httpGet:
               path: /actuator/health
               port: 8080
-            failureThreshold: 40
+            failureThreshold: 120
             periodSeconds: 10
       volumes:
         - name: keystore-volume
