@@ -28,7 +28,7 @@ spec:
            do echo waiting for database; sleep 2; done;']
      containers:
        - name: userservice
-         image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/userservice:8a5fbd0
+         image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/userservice:fa3dfeb
          ports:
            - containerPort: 8080
          resources:
