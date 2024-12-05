@@ -27,7 +27,7 @@ spec:
             do echo waiting for database; sleep 2; done;']
       containers:
         - name: coinservice
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/coinservice:6b37be8
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/coinservice:a2dac23
           ports:
             - containerPort: 8080
           resources:
