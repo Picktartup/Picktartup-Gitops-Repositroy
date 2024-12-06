@@ -5,6 +5,15 @@ prometheus:
     enableRemoteWriteReceiver: true
     externalLabels:
       cluster: main-cluster
+
 grafana:
   service:
     type: NodePort
+  grafana.ini:
+    server:
+      root_url: http://192.168.0.141:32647
+      allow_embedding: true
+    security:
+      allow_embedding: true
+    http:
+      allow_origin: "*"

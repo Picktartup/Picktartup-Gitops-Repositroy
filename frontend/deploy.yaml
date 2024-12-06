@@ -16,9 +16,20 @@ spec:
         app: react-frontend
     spec:
       imagePullSecrets:
-      - name: ecr-secret
+        - name: ecr-secret
       containers:
-      - name: react-frontend
-        image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/frontend:latest
-        ports:
-        - containerPort: 80
+        - name: react-frontend
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/frontend:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: REACT_APP_CHANNEL_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: front-credentials
+                  key: REACT_APP_CHANNEL_KEY
+            - name: REACT_APP_STORE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: front-credentials
+                  key: REACT_APP_STORE_ID

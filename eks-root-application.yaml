@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: picktartup-root-application
+  name: eks-root-application
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
     targetRevision: main
-    path: application
+    path: application/eks
     directory:
       recurse: true
   destination:
-    server: https://kubernetes.default.svc
+    server: https://B258BDF819F6764DABEAE042571E85C2.gr7.ap-northeast-2.eks.amazonaws.com
     namespace: argocd
   syncPolicy:
     automated:
