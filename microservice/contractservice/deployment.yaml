@@ -110,6 +110,11 @@ spec:
                 secretKeyRef:
                   name: contract-db-credentials
                   key: AUTH_CODE_EXPIRATION_MILLIS
+            - name: KEYSTORE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: contract-db-credentials
+                  key: KEYSTORE_BUCKET
           readinessProbe:
             httpGet:
               path: /actuator/health
