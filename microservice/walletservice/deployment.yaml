@@ -90,6 +90,21 @@ spec:
                 secretKeyRef:
                   name: wallet-db-credentials
                   key: WALLET_ADMIN
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: AWS_ACCESS_KEY
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: AWS_SECRET_KEY
+            - name: KEYSTORE_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-db-credentials
+                  key: KEYSTORE_BUCKET
           readinessProbe:
             httpGet:
               path: /actuator/health

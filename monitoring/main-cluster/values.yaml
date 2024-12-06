@@ -1,0 +1,10 @@
+prometheus:
+  service:
+    type: NodePort
+  prometheusSpec:
+    enableRemoteWriteReceiver: true
+    externalLabels:
+      cluster: main-cluster
+grafana:
+  service:
+    type: NodePort
