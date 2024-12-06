@@ -27,7 +27,7 @@ spec:
             do echo waiting for database; sleep 2; done;']
       containers:
         - name: walletservice
-          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:53905de
+          image: 590183915522.dkr.ecr.ap-northeast-2.amazonaws.com/walletservice:b415d7c
           volumeMounts:
             - name: keystore-volume
               mountPath: /app/keystore
