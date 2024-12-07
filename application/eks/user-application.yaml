@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
     targetRevision: main
-    path: microservice/userservice/*
+    path: microservice/userservice
   destination:
     server: https://B258BDF819F6764DABEAE042571E85C2.gr7.ap-northeast-2.eks.amazonaws.com
     namespace: userservice
