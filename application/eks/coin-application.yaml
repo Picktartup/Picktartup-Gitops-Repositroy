@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eks-coin-application
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Picktartup/Picktartup-Integration-Test.git
+    targetRevision: main
+    path: microservice/coinservice
+  destination:
+    server: https://B258BDF819F6764DABEAE042571E85C2.gr7.ap-northeast-2.eks.amazonaws.com
+    namespace: coinservice
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - Timeout=300s
+  ignoreDifferences:                  
+    - group: bitnami.com
+      kind: SealedSecret
+      jsonPointers:
+        - /status
